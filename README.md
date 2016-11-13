@@ -12,6 +12,34 @@ Ingredients:
  1x or more Chrome browsers
 
 1) Build the pi 
+plug all the bits together - soldering is required for the tft 
+2) setup the OS
+  a) download https://s3.amazonaws.com/adafruit-raspberry-pi/2016-10-18-pitft-22.zip
+     or more or appropiate raspberian for your screen.
+  b) put it on an sd card 
+https://www.raspberrypi.org/documentation/installation/installing-images/
+  c) ssh into the new device (or plugin a mouse/kbd)
+  d) run raspi-config - 
+      expand the filesystem, 
+      enable the camera, 
+      change the password , 
+      set to login in auto as pi with a graphical user interface, 
+      disable VNC 
+    Then reboot.
+  e) log back in - with the new password...
+  f) sudo apt-get update
+  g) make a link
+   mknod camera.mjpeg p
+   ln -s camera.mjpeg camera
+  h) copy dot.xsession to .xsession
+  i) 
+copy pipe-java-client-1.0-SNAPSHOT.jar
+
+reboot
+
+(notes) 
+raspivid -cd MJPEG -o camera.mjpeg -t 0 -h 360 -w 640 -fps 5
+   
 
 
 
