@@ -15,10 +15,10 @@ xmessage -timeout 5 -buttons "Yes:1,No:0" "Factory Reset?"
 reset=$?
 gpio -g mode 17 up
 pinval=`gpio -g read 17`
-#if [ $pinval -eq "0" ]
-#then
-# echo secret | keytool -delete -alias master -keystore ipsecert.ks
-#fi
+if [ $pinval -eq "0" ]
+then
+  reset=1 
+fi
 if [ $reset -eq "1" ]
 then
 xmessage -timeout 5 "Reset ownership"
@@ -29,6 +29,6 @@ gpio -g mode 22 up
 pinval=`gpio -g read 22`
 while [ $pinval -ne 0 ]
 do
-java -Djava.net.preferIPv4Stack=true -Dpe.pi.client.small.CamClassName=pe.pi.client.small.JpegPipeCameraEndpoint -Xmx128m -jar pipe-java-client-1.0-SNAPSHOT.jar >> /dev/null 
+java -Djava.net.preferIPv4Stack=true -Dpe.pi.client.small.CamClassName=pe.pi.client.small.JpegPipeCameraEndpoint -Xmx128m -jar pipe-java-client-1.0-SNAPSHOT.jar > thing.out 
 pinval=`gpio -g read 22`
 done
