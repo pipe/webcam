@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <link href="https://pi.pe/pipe.css" media="all" rel="stylesheet" />
+        <title>WebCam</title>
+    </head>
+<body>
+<script src="js/require.js"></script>
+<script src="https://pi.pe/iot/js/jquery-1.8.3.js"></script>
+<script src="https://pi.pe/iot/js/phono.sdp.js"></script>
+<script src="https://pi.pe/iot/js/ipseorama.js"></script>
+<script src="https://pi.pe/iot/js/dc.js"></script>
+<script src="https://pi.pe/iot/js/adapter.js"></script>
+<script type="text/javascript">
+    var pipe;
+    var mess ="";
+    var img = new Image();
+    var sha256 = require("js/sha256");
+    var camChannel;
+
+    function onDcMessage(evt) {
+        mess +=evt.data;
+        if (mess.endsWith("}")){
+            var jMess = JSON.parse(mess);
+            mess="";
+            img.src='data:image/jpeg;base64,' +jMess.frame;
+            camChannel.send(JSON.stringify({command: "read"}));
+        }
+    }
+
+    function makeDc(friends) {
+        pipe.setNonce("");
+        pipe.setTo(friends[friends.length -1].finger);
+        camChannel = pipe.createDataChannel("camera", {});
+        camChannel.onopen = function() {
+            camChannel.send(JSON.stringify({command: "read"}));
+        };
+        camChannel.onmessage = onDcMessage;
+    }
+
+    function gotFinger(finger) {
+        var ctx = document.getElementById('camera').getContext('2d');
+        img.onload = function(){
+            ctx.drawImage(img, 0, 0);
+        };
+        var fws = new WebSocket("wss://lookafar.westhawk.co.uk/websocket/?finger=" + finger);
+        fws.onopen = function() {
+            pipe = new IpseDataChannel(finger, fws);
+            Ipseorama.dbListPrint(makeDc);
+        }
+    }
+
+    $(document).ready(function() {
+        Ipseorama.whoAmI(gotFinger, function(err) {
+            console.log("could not create identity " + err);
+        });
+    });
+
+</script>
+<h3>WebCam</h3>
+<canvas id="camera" width="640" height="360"/>
+
+</body>
+</html>

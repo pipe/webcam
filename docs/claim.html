@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://pi.pe/pipe.css" media="all" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <title>Claim a new Device</title>
+</head>
+<body>
+<script src="js/require.js"></script>
+<script src="https://pi.pe/iot/js/jquery-1.8.3.js"></script>
+<script src="https://pi.pe/iot/js/phono.sdp.js"></script>
+<script src="https://pi.pe/iot/js/ipseorama.js"></script>
+<script src="https://pi.pe/iot/js/dc.js"></script>
+<script src="https://pi.pe/iot/js/LazarQr.min.js"></script>
+<script src="https://pi.pe/iot/js/adapter.js"></script>
+<script type="text/javascript">
+    var pipe = null;
+    var chout;
+    var nonceS;
+    var snap;
+    var sha256 = require("js/sha256");
+    function gotFinger(finger) {
+        $('#myFinger').html(finger);
+        var fws = new WebSocket("wss://lookafar.westhawk.co.uk/websocket/?finger=" + finger);
+        pipe = new IpseDataChannel(finger,fws);
+        pipe.setOnDataChannel(onNewDc);
+        askforCam();
+    }
+    function onDcMessage(evt) {
+        var resp = JSON.parse(evt.data);
+        if (resp.status === "ok") {
+            pipe.addRemote(snap,
+                    function() {
+                        $('#result').html("<H3>Device Added</H3>");
+                        chout.close();
+                        document.location="webcam.html";
+                    });
+        } else {
+            console.log("problem with claim " + evt.data);
+        }
+    }
+    function onNewDc(channel) {
+        channel.onmessage = onDcMessage;
+    }
+    function makedc() {
+        var tofinger = $('#tofinger').val();
+        console.log("setting toFinger" + tofinger);
+
+        pipe.setTo(tofinger);
+        pipe.setNonce(nonceS);
+        var channel = pipe.createDataChannel("cert", {});
+        channel.onopen = function() {
+            console.log("Outbound channel ");
+            var jmess = JSON.stringify({id: "1", action: "list"});
+            console.log("sending " + jmess);
+            channel.send(jmess);
+        };
+
+        channel.onmessage = onDcMessage;
+        chout = channel;
+    }
+
+
+    function startQrDecode() {
+        var video = document.getElementById('gumVideo');
+        var photo = document.getElementById('qr-canvas');
+        var context = photo.getContext('2d');
+        // set our canvas to the same size as our video
+
+        qrcode.callback = function(code) {
+            console.log("got qrcode of " + code);
+            clearInterval(tick);
+            navigator.vibrate(50);
+            var fparts = code.split(":");
+            $('#tofinger').val(fparts[0]);
+            nonceS = fparts[1];
+            console.log("nonce = " + nonceS);
+            for (var i = 1; i < 10; i++) {
+                var q = 1.0 - (0.1 * i);
+                snap = photo.toDataURL('image/jpeg', q);
+                if (snap.length < 60000) {
+                    break;
+                }
+            }
+
+            $("#qr-canvas").remove();
+            $("#gumVideo").css("display", "none");
+            makedc();
+        };
+        var tick = setInterval(function() {
+            if ((video.videoWidth > 0) && (video.videoHeight > 0)) {
+                var rat = video.height / video.videoHeight;
+                photo.width = video.videoWidth * rat;
+                photo.height = video.videoHeight * rat;
+                context.drawImage(video, 0, 0, photo.width, photo.height);
+                qrcode.decode();
+            }
+        }, 250);
+    }
+    function startGum(sid) {
+        var constraints = {video: true, audio: false};
+        if (sid) {
+            constraints.video = {optional: [{sourceId: sid}]};
+        }
+        navigator.getUserMedia(constraints,
+                function(stream) {
+                    var url = window.URL || window.webkitURL;
+                    var v = document.getElementById('gumVideo');
+                    v.src = url ? url.createObjectURL(stream) : stream;
+                    v.play();
+                    startQrDecode();
+                },
+                function(error) {
+                    alert('Something went wrong. (error code ' + error.code + ')');
+                    location.href = "nogum.htm";
+                }
+        );
+    }
+    function onSourcesAcquired(sources) {
+        var sid;
+        for (var i = 0; i != sources.length; ++i) {
+            var source = sources[i];
+            console.log(source);
+            if ((source.kind == "video") && (source.facing == "environment")) {
+                sid = source.id;
+                //break;
+            }
+        }
+        startGum(sid);
+    }
+    function askforCam() {
+        console.log("starting QR reader");
+        //frontcam...
+        if ((typeof MediaStreamTrack === 'undefined') || (typeof MediaStreamTrack.getSources == 'undefined')) {
+            startGum();
+        } else {
+            MediaStreamTrack.getSources(onSourcesAcquired);
+        }
+    }
+
+    $(document).ready(function() {
+        Ipseorama.whoAmI(gotFinger, function(err) {
+            console.log("could not create identity " + err)
+        });
+    });
+</script>
+<h1>pipe Claim a device</h1>
+<div> My Fingerprint is :
+    <span id="myFinger">unknown</span> </div>
+<div id="remoteVideoContainer" class="ui-video-remote-container">
+    <canvas width="320" height="240" id="qr-canvas"></canvas>
+    <video style="display:none;" width="320" height="240" id="gumVideo" autoplay="autoplay"/>
+</div>
+<form onsubmit="return false;">
+    <input type="text" name="to" id="tofinger" value=""/>
+</form>
+</body>
+</html>
