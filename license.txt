@@ -1,0 +1,8 @@
+This beta software (and associated intellectual property) is licensed to you for a six month period by pi.pe GmbH, hereafter |pipe|, strictly for your personal, non-commercial use, for that single Pi and is not for re-distribution, re-licensing or re-use.
+
+No Reverse Engineering. You agree not to reverse engineer or decompile any part of the |pipe| software, nor to defeat or attempt to defeat any encryption or security functionality.
+
+* |PIPE| DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR ANY PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT.
+
+No ownership interest is granted by either party. 
+
