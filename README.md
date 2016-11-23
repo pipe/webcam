@@ -2,6 +2,7 @@
 ## using https://pi.pe/ 's IoT toolkit.
 ##Code and docs backing up the talk given by @steely-glint 
 ##at https://www.krankygeek.com
+#backgrounder video at: https://youtu.be/8zgvhL-poRQ
 
 
 
