@@ -52,6 +52,14 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 
 5. reboot
 
+##Hosting
+There are multiple options for hosting the necessary (static) web pages.
+The easiest is to fork this repo to your own github account then use 'settings' 
+on github to enable github-pages for the docs directory of the repo.
+
+Other alternatives include S3, your own server etc....
+Whatever you do you'll need to serve from https for the camera to work.
+
 ##Testing:
 You should see a QR code on the TFT screen -
 claim it using the claim.html page
