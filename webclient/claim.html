@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://pi.pe/pipe.css" media="all" rel="stylesheet" />
+    <link href="css/pipe.css" media="all" rel="stylesheet" />
+	<meta name="viewport" content="width.device-width, initial-scale=1.1 , maximum-scale=1.1">
     <meta charset="UTF-8">
-    <title>Claim a new Device</title>
+    <title>Claim a new Device |pipe|</title>
 </head>
 <body>
 <script src="js/require.js"></script>
@@ -144,9 +145,12 @@
         });
     });
 </script>
-<h1>pipe Claim a device</h1>
-<div> My Fingerprint is :
-    <span id="myFinger">unknown</span> </div>
+<img src="img/pipe.png">
+
+<h1>claim a device</h1>
+<h3> My Fingerprint is <br>
+    <span id="myFinger">unknown</span> </h3>
+    
 <div id="remoteVideoContainer" class="ui-video-remote-container">
     <canvas width="320" height="240" id="qr-canvas"></canvas>
     <video style="display:none;" width="320" height="240" id="gumVideo" autoplay="autoplay"/>
