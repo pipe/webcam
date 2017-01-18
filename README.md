@@ -1,16 +1,27 @@
 #How to build a simple,secure,private webcam with webRTC
 ## using https://pi.pe/ 's IoT toolkit.
+![webcam block diag](/docs/img/overview-pipe-webcam.png)
 ##Code and docs backing up the talk given by @steely-glint 
 ##at https://www.krankygeek.com
 #backgrounder video at: https://youtu.be/8zgvhL-poRQ
 
+#Summary 
+Use our API and device agent software to make a webcam with
+* end-to-end encryption
+* low running costs
+* simple setup
+* no open ports 
+* accessable from a smartphone browser
+* no passwords
+* works on 3g, 4g, wifi etc.
 
+For more info on the API see https://pi.pe/api/
 
 ##Ingredients:
 
  * 1x Adafruit PiTFT 2.2" HAT Mini Kit - 320x240 2.2" TFT - No Touch 
  * 1x Raspberry Pi Camera v2.1 with mount - Standard 
- * 1x Raspberry Pi 3 - Raspberry Pi 3 Only 
+ * 1x Raspberry Pi 3 -
  * 1x git repo (cloned from here)
  * 1x copy of |pipe|'s IoT beta to run on the Pi
  * 1x or more Chrome browsers
