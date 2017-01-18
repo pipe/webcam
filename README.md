@@ -15,7 +15,7 @@ Use our API and device agent software to make a webcam with
 * no passwords
 * works on 3g, 4g, wifi etc.
 
-For more info on the API see https://pi.pe/api/
+For more info on the API see https://steely-glint.github.io/PipeApiDocs/
 
 ##Ingredients:
 
