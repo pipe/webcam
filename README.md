@@ -41,7 +41,8 @@ plug all the bits together - soldering is required for the tft
      or more or appropiate raspberian for your screen.
   * put it on an sd card
 https://www.raspberrypi.org/documentation/installation/installing-images/
-  * ssh into the new device (or plugin a mouse/kbd)
+  * ssh into the new device (or plugin a mouse/kbd) 
+     (note you may need to add a 'ssh' file in /boot to enable ssh on first boot)
   * run raspi-config -
       * expand the filesystem, 
       * enable the camera, 
@@ -54,6 +55,8 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 3. setup wifi (if needed)
    ethernet links are more secure and PoE is the best way to power a PiCam
    but in some situations wifi fits the bill
+   (recent rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
+   connect up on first boot)
 4. install and config pipe software
   * make a link and pipe for the camera
    `mknod camera.mjpeg p`
