@@ -36,7 +36,7 @@ that single Pi and not for re-distribuiton or re-use._
 ## Recipe
 1. Build the pi
 plug all the bits together - soldering is required for the tft 
-1. setup the OS
+2. setup the OS
   * download https://s3.amazonaws.com/adafruit-raspberry-pi/2016-10-18-pitft-22.zip
      or more or appropiate raspberian for your screen.
   * put it on an sd card
@@ -52,19 +52,19 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
     Then reboot.
   * log back in - with the new password...
   * sudo apt-get update
-1. setup wifi (if needed)
+3. setup wifi (if needed)
    ethernet links are more secure and PoE is the best way to power a PiCam
    but in some situations wifi fits the bill
-   (recent rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
+   (recent Rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
    connect up on first boot)
-1. install and config pipe software
+4. install and config pipe software
   * make a link and pipe for the camera
    `mknod camera.mjpeg p`
    `ln -s camera.mjpeg camera`
   * copy `dot.xsession` to `.xsession` to pi's home directory
   * copy `pipe-java-client-1.0-SNAPSHOT.jar` and `camera.sh` to pi's home directory
 
-1. reboot
+5. reboot
 
 ## Hosting
 There are multiple options for hosting the necessary (static) web pages.
