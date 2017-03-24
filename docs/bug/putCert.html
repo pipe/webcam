@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Puts a Cert in to indexdb</title>
+    <script type="text/javascript">
+        var openedDB;
+
+        function openDb(){
+            return new Promise( (resolve,reject) => {
+                var request = indexedDB.open("TestCertDb");
+                request.onupgradeneeded = function(ev) {
+                    console.log("Indexdb.open() needed upgrade...");
+                    console.log("ev " + JSON.stringify(ev));
+                    var db = ev.target.result;
+                    if ((!ev.oldVersion) || (ev.oldVersion < 1)) {
+                        console.log("createObjectStore and  createIndex for new database ");
+                        // The database did not previously exist, so create object stores and indexes. var db = request.result;
+                        var cstore = db.createObjectStore("PipeCertTest", {keyPath: "id"});
+                    }
+                };
+                request.onsuccess = function() {
+                    console.log("Indexdb.open() ok");
+                    var db = request.result;
+                    db.onerror = function(event) {
+                        console.log("DB problem" + JSON.stringify(event));
+                    };
+                    resolve(db)
+                };
+                request.onerror = function(event) {
+                    console.log("Indexdb.open() error is " + event.target.error.message);
+                    reject (event);
+                };
+                request.onblocked = function(event) {
+                    console.log("Indexdb.open() open blocked.");
+                    reject (event);
+                };
+            });
+        }
+
+        function start(){
+            openDb().then( db => {
+                openedDB = db;
+                document.getElementById("put").removeAttribute("hidden");
+                document.getElementById("get").removeAttribute("hidden");
+                setStatus("DB opened");
+            })
+        }
+
+        function putCert(){
+                console.log("create a new cert");
+                let certParams ={
+                    name: "RSASSA-PKCS1-v1_5",
+                    modulusLength: 2048,
+                    publicExponent: new Uint8Array([1, 0, 1]),
+                    hash: "SHA-256" ,
+                    expires: 365*24*60*60*1000*1000
+                };
+
+                RTCPeerConnection.generateCertificate(certParams).then(function (cert) {
+                        console.log("created a new cert, now store it.");
+                        var tx = openedDB.transaction("PipeCertTest", "readwrite");
+                        tx.oncomplete = function() {
+                            console.log("transaction done .");
+                        };
+                        tx.onerror = function(event) {
+                            console.log("transaction error is " + event.target.error.message);
+                            setStatus("Cert put transaction,  error is " + event.target.error.message);
+
+                        };
+                        var store = tx.objectStore("PipeCertTest");
+                        var updateRequest = store.put({id: "test", cert: cert, timestamp: Date.now()});
+                        updateRequest.onsuccess = function() {
+                            console.log("cert stored.");
+                            setStatus("Cert stored.  Expires at "+ cert.expires);
+                        };
+                        updateRequest.onerror = function(event) {
+                            console.log("update error is " + event.target.error.message);
+                            setStatus("Cert put,  error is " + event.target.error.message);
+
+                        };
+                    }
+                );
+        }
+
+        function getCert(){
+            var tx = openedDB.transaction("PipeCertTest", "readonly");
+            tx.onerror = function(event) {
+                console.log("Get transaction failed" + JSON.stringify(event));
+            };
+
+            var store = tx.objectStore("PipeCertTest");
+            console.log("Looking for cert in Indexdb");
+            var request = store.get("test");
+            request.onsuccess = function(ev) {
+                var matching = ev.target.result;
+                if (matching) {
+                    console.log("Returning matched cert in DB");
+                    setStatus("Cert retrieved .  Expires at "+ matching.cert.expires);
+                } else {
+                    console.log("No suitable cert in DB - creating one ");
+                    setStatus("No cert retrieved");
+                }
+            };
+            request.oncomplete = function(ev) {
+                console.log("Search for cert in DB - complete");
+            };
+            request.onerror = function(event) {
+                console.log("Get failed" + JSON.stringify(event));
+                setStatus("Cert get,  error is " + event.target.error.message);
+            };
+        }
+        function reloadpage(){
+            window.location = "putCert.html";
+        }
+        function setStatus(mess){
+            document.getElementById("status").innerHTML = mess;
+        }
+    </script>
+</head>
+<body onload="start()">
+<h2>This is a page to test saving a WebRTC cert into indexed DB and then retrieving it.</h2>
+
+<p>I can't get Firefox to retrieve the cert after a browser restart.</p>
+<p>Page reloads are fine - and it works in chrome. </p>
+<p>in Firefox I get the message
+<pre> InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable </pre>
+</p>
+
+<button hidden id="put" onclick="putCert()">Put cert</button>
+<button hidden id="get" onclick="getCert()">Get cert</button>
+<button id="reload" onclick="reloadpage()">Reload page</button>
+<div id="status"></div>
+</body>
+</html>
