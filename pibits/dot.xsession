@@ -29,6 +29,6 @@ gpio -g mode 22 up
 pinval=`gpio -g read 22`
 while [ $pinval -ne 0 ]
 do
-java -Djava.net.preferIPv4Stack=true -Dpe.pi.client.small.CamClassName=pe.pi.client.small.JpegPipeCameraEndpoint -Xmx128m -jar pipe-java-client-1.0-SNAPSHOT.jar > thing.out 
+java -Djava.net.preferIPv4Stack=true -Dpe.pi.client.small.CamClassName=pe.pi.client.endpoints.cam.JpegPipeCameraEndpoint -Xmx128m -jar pipe-java-client-1.0-SNAPSHOT.jar > thing.out 
 pinval=`gpio -g read 22`
 done
