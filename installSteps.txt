@@ -28,7 +28,7 @@ cd ~
 git clone https://github.com/pipe/webcam.git
 
 cd webcam
-cp dot.xsession ~
+cp dot.xsession ~/.xsession
 cp webcam.js videorelay ~
 sudo cp nginx.default /etc/nginx/sites-enabled/default
 
