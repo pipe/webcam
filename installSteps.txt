@@ -1,0 +1,39 @@
+## enable boot to gui
+## expand fs
+## enable camera
+## reboot
+
+sudo apt-get update
+sudo apt-get install -y galternatives openjdk-8-jdk
+
+#generates an error..... fixed like this.
+sudo ln -s /usr/lib/jvm/java-8-openjdk-armhf/jre/lib/arm/client/ /usr/lib/jvm/java-8-openjdk-armhf/jre/lib/arm/server
+
+sudo apt-get install -y galternatives openjdk-8-jdk
+
+sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base \
+   gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+   gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc\
+   gstreamer1.0-tools autoconf automake libtool pkg-config\
+   libgstreamer1.0-dev \
+   libgstreamer-plugins-base1.0-dev libraspberrypi-dev nginx
+
+git clone https://github.com/thaytan/gst-rpicamsrc.git
+cd gst-rpicamsrc
+./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
+make
+sudo make install 
+cd ~
+
+git clone https://github.com/pipe/webcam.git
+
+cd webcam
+cp dot.xsession ~
+cp webcam.js videorelay ~
+sudo cp nginx.default /etc/nginx/sites-enabled/default
+
+cd ~
+wget {Address of |pipe| jar}
+
+sudo reboot
+

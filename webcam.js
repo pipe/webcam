@@ -2,8 +2,6 @@
  * Copyright 2018 pi.pe gmbh .
  *
  */
-// Scripting for |pipe| toolkit - 
-// maps device capabilities
 
 // Bare necessities
 var Log = Java.type('com.phono.srtplight.Log');
@@ -13,6 +11,7 @@ var BiFunc = Java.type('java.util.function.BiFunction');
 
 // Endpoints that will be available to the remote user
 var VideoRelay = Java.type('pe.pi.client.endpoints.rtmedia.VideoRelay');
+var HttpEndpoint = Java.type('pe.pi.client.endpoints.proxy.HttpEndpoint');
 
 // Other classes we will configure
 var JksCertHolder = Java.type('pe.pi.client.base.certHolders.JksCertHolder');
@@ -24,6 +23,9 @@ var homedir = "."; //sets CWD for bulk of actions
 
 // if you don't have an actual sceeen, you can intercept messages and status here
 var screen = App.mkScreen();
+App.prefixUrl = "https://pi.pe/p/cl.html";
+
+//var avmux = new AVMux(47806); // starts listening for video frames on this port
 
 
 // function that maps between the label of a requested datachannel and 
@@ -37,6 +39,9 @@ var mapper = new BiFunc(){
         Log.info("mapping Datachannel label");
         var ret = null;
         switch (l) {
+            case 'http://localhost:8181/': 
+                ret = new HttpEndpoint(s, l, screen);
+                break;
             case 'videorelay':
                 Log.debug("Creating " + l);
                 ret = new VideoRelay(s, l, screen);

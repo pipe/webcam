@@ -1,14 +1,9 @@
 #!/bin/sh -v
+xset s off         # don't activate screensaver
+xset -dpms         # disable DPMS (Energy Star) features.
+xset s noblank     # don't blank the video device
 xmessage -timeout 10 `hostname -I` 
-#xmessage -timeout 10 -buttons 20%:200,40%:400,60%:600,80%:800,100%:1000 "Screen brightness"
-#bright=$?
-#echo $bright
-#if [ $bright -eq "0" ] 
-#then
-# echo setting bright to 1000
 bright=1000
-#fi
-#echo $bright
 gpio -g mode 18 pwm
 gpio -g pwm 18 $bright
 xmessage -timeout 5 -buttons "Yes:1,No:0" "Factory Reset?"
@@ -29,6 +24,6 @@ gpio -g mode 22 up
 pinval=`gpio -g read 22`
 while [ $pinval -ne 0 ]
 do
-jjs -J-Xmx256m -J-Djava.net.preferIPv4Stack=true -cp pipe-java-client-1.0.4.jar webcam.js  > pipe.out
+jjs -J-Xmx256m -J-Dpe.pi.client.small.defaultPage=install.html -J-Djava.net.preferIPv4Stack=true -cp pipe-java-client-1.0.4.jar webcam.js  > pipe.out
 pinval=`gpio -g read 22`
 done

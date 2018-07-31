@@ -19,9 +19,12 @@ For more info on the API see https://steely-glint.github.io/PipeApiDocs/
 
 ## Ingredients:
 
- * 1x Adafruit PiTFT 2.2" HAT Mini Kit - 320x240 2.2" TFT - No Touch 
- * 1x Raspberry Pi Camera v2.1 with mount - Standard 
- * 1x Raspberry Pi 3 -
+ * 1x HDMI screen or xwindows capable display e.g.
+   Adafruit PiTFT 2.2" HAT Mini Kit - 320x240 2.2" TFT - No Touch 
+  
+ * 1x micro sd card 8GB or larger 
+ * 1x Raspberry Pi 
+ * 1x Raspberry Pi camera
  * 1x git repo (cloned from here)
  * 1x copy of |pipe|'s IoT beta to run on the Pi
  * 1x or more Chrome browsers
@@ -49,7 +52,8 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
       * change the password , 
       * set to login in auto as pi with a graphical user interface, 
       * disable VNC 
-    Then reboot.
+  * configure the screen (if isn't HDMI)
+  * reboot
   * log back in - with the new password...
   * sudo apt-get update
 3. setup wifi (if needed)
@@ -58,48 +62,34 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
    (recent Rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
    connect up on first boot)
 4. install and config software
-   * see pibits/installSteps.txt
+   * see installSteps.txt
 5. reboot
 
-## Hosting
-There are multiple options for hosting the necessary (static) web pages.
-The easiest is to fork this repo to your own github account then use 'settings' 
-on github to enable github-pages for the docs directory of the repo.
+## Hosting - none
+This is the |pipe| magic - the web interface is stored on your pi
+but protected so only you and people you lend access to can see it.
+You can edit the docs/index.html file to change the behaviour.
 
-Other alternatives include S3, your own server etc....
-Whatever you do you'll need to serve from https for the camera to work.
 
 ## Testing:
-You should see a QR code on the TFT screen -
-claim it using the claim.html page
-it should browse to webcam.html and auto connect you.
+* You should see a QR code on the TFT screen -
+* Scan it with a qr code reader on your android phone.
+* Or you can use https://pi.pe/p/scan.html in chrome
+* The devices should pair and take you to the webcam interface
 
 ## Lending:
 If you want to access the webcam from a different computer or android phone,
 you can do a lend/borrow transaction.
 
-* On the device you used to claim the pi, browse to lend.html
-* On the new device you want to add, browse to borrow.html
-* Use the lend page to scan the QR shown on the borrow page.
-* Now select the picam you want to lend from the pictures. (there will
-probably be only one). 
-* On the new device browse to camera.html and select the picam.
-
-## Customizing:
-git clone these pages and edit as you see fit.
-If you switch web domains (or wipe chrome's cookies) 
-you will need to re-claim the pi.
-You can do this by re-booting and then press and hold the #17 button on the
-TFT when asked if you want to factory reset. You'll get a new Qr - claim this
-from the claim.html page in your new domain.
+* On the device you used to claim the pi, browse to https://pi.pe/p/index.html
+* Select lend your device
+* Select the period you want to lend access for
+* Have the other android user scan the resulting QR
+* They will now have access
 
 ## Tightening up:
 * check for open ports
 `netstat -lnt`
 -remove associated software or firewall it.
 * other....
-   
-
-
-
 

@@ -1,17 +1,181 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link href="css/pipe.css" media="all" rel="stylesheet" />  
-    <meta charset="utf-8">
-	<meta name="viewport" content="width.device-width, initial-scale=1.1 , maximum-scale=1.1">
-    <title>|pipe|</title>    
-  </head>
-  <body>
-    <img id="logo" src="img/pipe.png">
-    <h1>menu</h1>
-   <div id='input' class='area'>
-        <button type="submit" class="button" id="button"  onclick="window.location.href='claim.html'">Claim Device</button>   
-		<button type="submit" class="button" id="button"  onclick="window.location.href='webcam.html'">Open Camera</button>    
-	</div>    
-  </body>
+<html><head><title>H264video</title>
+<style>
+#note {
+    font-size: 12px;
+}
+</style>
+        <script src="https://pi.pe/iot/js/jquery-1.8.3.js"></script>
+        <script src="https://pi.pe/p/pipe.js"></script>
+        <script type="text/javascript">
+            var duct = null;
+            var vidcc= null;
+
+            function setFriend() {
+                var dev = localStorage['install.html'];
+                makedc(dev);
+            }
+            function gotId(id) {
+                duct = new PipeDuct(id);
+                $('#remote').hide();
+                setFriend();
+            }
+            function addvideopatch(mess) {
+                var info = mess.info;
+                console.log("message is " + JSON.stringify(mess))
+                mess.patches = [
+                    // add video mid
+                    {
+                        "action": "increment",
+                        "at": "o=-",
+                        "field": 2
+                    },
+                    {
+                        "action": "replace",
+                        "at": "a=group:BUNDLE",
+                        "line": "a=group:BUNDLE " + info.datamid + " video"
+                    },
+                    {
+                        "action": "replace",
+                        "at": "m=application",
+                        "line": "m=application 9 DTLS/SCTP 5000"
+                    },
+                    /*
+                     a=msid-semantic: WMS janus m=video 9 RTP/SAVPF 126 c=IN IP4 192.168.1.80 a=sendonly a=mid:video a=rtcp-mux a=ice-ufrag:LXis a=ice-pwd:5Op42xm/UduOHWyse3idkf a=ice-options:trickle a=fingerprint:sha-256 D2:B9:31:8F:DF:24:D8:0E:ED:D2:EF:25:9E:AF:6F:B8:34:AE:53:9C:E6:F3:8F:F2:64:15:FA:E8:7F:53:2D:38 a=setup:actpass a=rtpmap:126 H264/90000 a=fmtp:126 profile-level-id=42e01f;packetization-mode=1 a=rtcp-fb:126 nack a=rtcp-fb:126 goog-remb a=ssrc:3792295630 cname:janusvideo a=ssrc:3792295630 msid:janus janusv0 a=ssrc:3792295630 mslabel:janus a=ssrc:3792295630 label:janusv0
+                     */            {
+                        "action": "append",
+                        "at": "end",
+                        "lines": [
+                            "m=video 9 RTP/SAVPF "+info.vtype,
+                            "a=mid:video",
+                            "a=sendonly",
+                            "a=rtcp-mux",
+                            "a=rtpmap:" + info.vtype + " " + info.codec,
+                            "a=fmtp:"+ info.vtype +" packetization-mode=1;profile-level-id=42e01f",
+                            "a=ssrc:" + info.csrc + " cname:drone",
+                            "a=ssrc:" + info.csrc + " mslabel:" + info.msid,
+                            "a=ssrc:" + info.csrc + " label:" + info.appdata,
+                            "a=ssrc:" + info.csrc + " msid:" + info.msid + " " + info.appdata,
+                        ]
+                    },
+                    {
+                        "action": "duplicate",
+                        "at": "a=mid:video",
+                        "line": "a=fingerprint:"
+                    },
+                    {
+                        "action": "duplicate",
+                        "at": "a=mid:video",
+                        "line": "a=ice-ufrag:"
+                    },
+                    {
+                        "action": "duplicate",
+                        "at": "a=mid:video",
+                        "line": "a=ice-pwd:"
+                    },
+                    {
+                        "action": "duplicate",
+                        "at": "a=mid:video",
+                        "line": "a=setup:"
+                    },
+                    {
+                        "action": "duplicate",
+                        "at": "a=mid:video",
+                        "line": "c=IN"
+                    }
+                ];
+
+            }
+
+            function sendLd() {
+                var desc = duct.peerCon.localDescription;
+                var mess = {type: desc.type, sdp: desc.sdp, tick: Date.now()};
+                console.log("sending " + JSON.stringify(mess));
+                console.log("to " + vidcc.label);
+                vidcc.send(JSON.stringify(mess));
+            }
+
+            function srd() {
+                var pc = duct.peerCon;
+                console.log("set Remote description  ok");
+                pc.createAnswer(function (desc) {
+                    pc.setLocalDescription(desc, function () {
+                        console.log("Set Local description");
+                        setTimeout(sendLd, 100);
+                    }, function (e) {
+                        console.log("Set Local description error " + e);
+                    });
+                }, function (e) {
+                    console.log("Create answer error " + e);
+                });
+            }
+
+            function srdfail(e) {
+                console.log("Set Remote description error " + e);
+            }
+
+            function makeVideo(){
+
+                var vc = duct.createDataChannel("videorelay",{});
+                vc.onopen = function(){
+                    $('#friendList').hide();
+                    console.log("videorelay channel ");
+                    duct.peerCon.ontrack= function(e){
+                        console.log("got new stream");
+                        var video = document.getElementById('ownervideo');
+                        video.srcObject = e.streams[0];
+                    };
+                    setTimeout(function(){
+                        console.log("upgrade gst channel ");
+                        vc.send(JSON.stringify({type:"upgrade",time:Date.now()}));
+                    },100);
+                    vidcc = vc;
+                };
+                vc.onmessage = function(evt){
+                    var message = JSON.parse(evt.data);
+                    console.log("->" + JSON.stringify(message));
+                    if ((message.type == "offer" )
+                        || (message.type == "answer")) {
+                        if (message.info) {
+                            addvideopatch(message);
+                        }
+                        var patched = Phono.sdp.patch(duct.peerCon.remoteDescription.sdp, message);
+                        console.log("-+>" + JSON.stringify(patched));
+                        var rtcd = new RTCSessionDescription(patched);
+                        duct.peerCon.setRemoteDescription(rtcd, srd, srdfail);
+                    }
+                };
+                vc.onclose = function(){
+                }
+            }
+
+
+            function makedc(deviceId) {
+                console.log("setting deviceId" + deviceId);
+                duct.setTo(deviceId);
+                duct.connect().then(function (d) {
+                    setTimeout(function(){
+                        makeVideo();
+                    },100);
+                } );
+            }
+
+
+            $(document).ready(function() {
+                PipeDb.whoAmI(gotId, function(err) {
+                    console.log("could not create identity " + err);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>H264 Video </h1>
+        <div id="friendList">
+
+        </div>
+
+        <video id="ownervideo" autoplay="autoplay" width="1280" height="720" />
+
+
+
+    </body>
 </html>
