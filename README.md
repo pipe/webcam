@@ -28,9 +28,10 @@ For more info on the API see https://steely-glint.github.io/PipeApiDocs/
  * 1x git repo (cloned from here)
  * 1x copy of |pipe|'s IoT beta to run on the Pi
  * 1x or more Chrome browsers
+ * Around 30 mins to 1hr
 
 To obtain a copy of our beta software, send an email with your Pi's serial
-number to me you can get the serial number with 
+number to me. You can get the serial number with 
 `awk '/^Serial/ { print $3}' < /proc/cpuinfo`
 
 _The beta software (and associated intellectual property) is licensed for
@@ -45,9 +46,9 @@ plug all the bits together - soldering is required for the tft
 https://www.raspberrypi.org/documentation/installation/installing-images/
   * ssh into the new device (or plugin a mouse/kbd) 
      (note you may need to add a 'wpa_supplicant.conf' and 'ssh' file in /boot to enable wifi/ssh on first boot)
-    ssh p2@raspberrypi.local (assuming you only have one)
+    ssh pi@raspberrypi.local (assuming you only have one)
   * run raspi-config -
-      * expand the filesystem, 
+      * rename the device, 
       * enable the camera, 
       * change the password , 
       * set to login in auto as pi with a graphical user interface, 
