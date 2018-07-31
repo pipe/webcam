@@ -1,162 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href="css/pipe.css" media="all" rel="stylesheet" />
-	<meta name="viewport" content="width.device-width, initial-scale=1.1 , maximum-scale=1.1">
-    <meta charset="UTF-8">
-    <title>Claim a new Device |pipe|</title>
-</head>
-<body>
-<script src="js/require.js"></script>
-<script src="https://pi.pe/iot/js/jquery-1.8.3.js"></script>
-<script src="https://pi.pe/iot/js/phono.sdp.js"></script>
-<script src="https://pi.pe/iot/js/ipseorama.js"></script>
-<script src="https://pi.pe/iot/js/dc.js"></script>
-<script src="https://pi.pe/iot/js/LazarQr.min.js"></script>
-<script src="https://pi.pe/iot/js/adapter.js"></script>
-<script type="text/javascript">
-    var pipe = null;
-    var chout;
-    var nonceS;
-    var snap;
-    var sha256 = require("js/sha256");
-    function gotFinger(finger) {
-        $('#myFinger').html(finger);
-        var fws = new WebSocket("wss://lookafar.westhawk.co.uk/websocket/?finger=" + finger);
-        pipe = new IpseDataChannel(finger,fws);
-        pipe.setOnDataChannel(onNewDc);
-        askforCam();
-    }
-    function onDcMessage(evt) {
-        var resp = JSON.parse(evt.data);
-        if (resp.status === "ok") {
-            pipe.addRemote(snap,
-                    function() {
-                        $('#result').html("<H3>Device Added</H3>");
-                        chout.close();
-                        document.location="webcam.html";
+<html><head>
+<link href="https://pi.pe/pipe.css" media="all" rel="stylesheet" />
+<title>Claim a visible device</title></head>
+    <script src="https://pi.pe/iot/js/require.js"></script>
+    <script src="https://pi.pe/iot/js/jquery-1.8.3.js"></script>
+    <script src="https://pi.pe/iot/js/phono.sdp.js"></script>
+    <script src="https://pi.pe/iot/js/pipeDb.js"></script>
+    <script src="https://pi.pe/iot/js/pipeDuct.js"></script>
+    <script src="https://pi.pe/iot/js/LazarQr.min.js"></script>
+    <script src="https://pi.pe/iot/js/claim.js"></script>
+    <script type="text/javascript">
+        var nonceS;
+        var snap;
+
+        var sha256 = require("js/sha256");
+        function startQrDecode() {
+            var video = document.getElementById('gumVideo');
+            var photo = document.getElementById('qr-canvas');
+            var context = photo.getContext('2d');
+            // set our canvas to the same size as our video
+
+            qrcode.callback = function(code) {
+                console.log("got qrcode of " + code);
+                clearInterval(tick);
+                navigator.vibrate(50);
+                var fparts = code.split(":");
+                $('#tofinger').val(fparts[0]);
+                nonceS = fparts[1];
+                console.log("nonce = " + nonceS);
+                for (var i = 1; i < 10; i++) {
+                    var q = 1.0 - (0.1 * i);
+                    snap = photo.toDataURL('image/jpeg', q);
+                    console.log("snap encoded at q=" + q + " of size " + snap.length)
+                    if (snap.length < 60000) {
+                        break;
+                    }
+                }
+
+                $("#qr-canvas").remove();
+                $("#gumVideo").css("display", "none");
+                dopair(fparts[0],fparts[1]);
+            };
+            var tick = setInterval(function() {
+                if ((video.videoWidth > 0) && (video.videoHeight > 0)) {
+                    var rat = video.height / video.videoHeight;
+                    photo.width = video.videoWidth * rat;
+                    photo.height = video.videoHeight * rat;
+                    console.log("set photo to " + photo.width + " x " + photo.height);
+                    console.log("rat was " + rat);
+                    context.drawImage(video, 0, 0, photo.width, photo.height);
+                    qrcode.decode();
+                }
+            }, 250);
+        }
+        function startGum(sid) {
+            var constraints = {video: true, audio: false};
+            if (sid) {
+                constraints.video = {optional: [{sourceId: sid}]};
+            }
+            navigator.mediaDevices.getUserMedia(constraints).then(
+                    function(stream) {
+                        var url = window.URL || window.webkitURL;
+                        var v = document.getElementById('gumVideo');
+                        v.src = url ? url.createObjectURL(stream) : stream;
+                        //v.play();
+                        startQrDecode();
+                    }).catch(
+                    function(error) {
+                        alert('Something went wrong. (error code ' + error.code + ')');
+                        location.href = "nogum.htm";
+                        return;
                     });
-        } else {
-            console.log("problem with claim " + evt.data);
         }
-    }
-    function onNewDc(channel) {
-        channel.onmessage = onDcMessage;
-    }
-    function makedc() {
-        var tofinger = $('#tofinger').val();
-        console.log("setting toFinger" + tofinger);
-
-        pipe.setTo(tofinger);
-        pipe.setNonce(nonceS);
-        var channel = pipe.createDataChannel("cert", {});
-        channel.onopen = function() {
-            console.log("Outbound channel ");
-            var jmess = JSON.stringify({id: "1", action: "list"});
-            console.log("sending " + jmess);
-            channel.send(jmess);
-        };
-
-        channel.onmessage = onDcMessage;
-        chout = channel;
-    }
-
-
-    function startQrDecode() {
-        var video = document.getElementById('gumVideo');
-        var photo = document.getElementById('qr-canvas');
-        var context = photo.getContext('2d');
-        // set our canvas to the same size as our video
-
-        qrcode.callback = function(code) {
-            console.log("got qrcode of " + code);
-            clearInterval(tick);
-            navigator.vibrate(50);
-            var fparts = code.split(":");
-            $('#tofinger').val(fparts[0]);
-            nonceS = fparts[1];
-            console.log("nonce = " + nonceS);
-            for (var i = 1; i < 10; i++) {
-                var q = 1.0 - (0.1 * i);
-                snap = photo.toDataURL('image/jpeg', q);
-                if (snap.length < 60000) {
-                    break;
+        function onSourcesAcquired(sources) {
+            var sid;
+            for (var i = 0; i != sources.length; ++i) {
+                var source = sources[i];
+                console.log(source);
+                if ((source.kind == "videoinput") && (source.label.endsWith("back"))) {
+                    sid = source.deviceId;
+                    //break;
                 }
             }
-
-            $("#qr-canvas").remove();
-            $("#gumVideo").css("display", "none");
-            makedc();
-        };
-        var tick = setInterval(function() {
-            if ((video.videoWidth > 0) && (video.videoHeight > 0)) {
-                var rat = video.height / video.videoHeight;
-                photo.width = video.videoWidth * rat;
-                photo.height = video.videoHeight * rat;
-                context.drawImage(video, 0, 0, photo.width, photo.height);
-                qrcode.decode();
-            }
-        }, 250);
-    }
-    function startGum(sid) {
-        var constraints = {video: true, audio: false};
-        if (sid) {
-            constraints.video = {optional: [{sourceId: sid}]};
+            startGum(sid);
         }
-        navigator.getUserMedia(constraints,
-                function(stream) {
-                    var url = window.URL || window.webkitURL;
-                    var v = document.getElementById('gumVideo');
-                    v.src = url ? url.createObjectURL(stream) : stream;
-                    v.play();
-                    startQrDecode();
-                },
-                function(error) {
-                    alert('Something went wrong. (error code ' + error.code + ')');
-                    location.href = "nogum.htm";
-                }
-        );
-    }
-    function onSourcesAcquired(sources) {
-        var sid;
-        for (var i = 0; i != sources.length; ++i) {
-            var source = sources[i];
-            console.log(source);
-            if ((source.kind == "video") && (source.facing == "environment")) {
-                sid = source.id;
-                //break;
+        function askforCam() {
+            console.log("starting QR reader");
+            //frontcam...
+            var sid;
+            if ((typeof navigator.mediaDevices === 'undefined') || (typeof navigator.mediaDevices.enumerateDevices == 'undefined')) {
+                startGum(sid);
+            } else {
+                navigator.mediaDevices.enumerateDevices().then(onSourcesAcquired);
+                //MediaStreamTrack.getSources(onSourcesAcquired);
             }
         }
-        startGum(sid);
-    }
-    function askforCam() {
-        console.log("starting QR reader");
-        //frontcam...
-        if ((typeof MediaStreamTrack === 'undefined') || (typeof MediaStreamTrack.getSources == 'undefined')) {
-            startGum();
-        } else {
-            MediaStreamTrack.getSources(onSourcesAcquired);
-        }
-    }
 
-    $(document).ready(function() {
-        Ipseorama.whoAmI(gotFinger, function(err) {
-            console.log("could not create identity " + err)
+        $(document).ready(function() {
+            PipeDb.whoAmI( function (id) {
+                gotId(id);
+                askforCam();
+            }, function(err) {
+                console.log("could not create identity " + err)
+            });
         });
-    });
-</script>
-<img src="img/pipe.png">
+    </script>
+    <h1>pipe Claim a device</h1>
+    <!--div> My Fingerprint is :
+        <span id="myFinger">unknown</span> </div-->
+    <div id="remoteVideoContainer" class="ui-video-remote-container">
+        <canvas width="320" height="240" id="qr-canvas"></canvas>
+        <video style="display:none;" width="320" height="240" id="gumVideo" autoplay="autoplay"/>
+    </div>
 
-<h1>claim a device</h1>
-<h3> My Fingerprint is <br>
-    <span id="myFinger">unknown</span> </h3>
-    
-<div id="remoteVideoContainer" class="ui-video-remote-container">
-    <canvas width="320" height="240" id="qr-canvas"></canvas>
-    <video style="display:none;" width="320" height="240" id="gumVideo" autoplay="autoplay"/>
-</div>
-<form onsubmit="return false;">
-    <input type="text" name="to" id="tofinger" value=""/>
-</form>
+
+    <div id='result'> </div>
+
 </body>
 </html>

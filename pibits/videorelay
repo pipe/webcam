@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "sending to " ${1}
+exec gst-launch-1.0 \
+ rpicamsrc annotation-mode=date+time bitrate=2048000 ! video/x-h264,width=1280,height=720,framerate=20/1 ! h264parse !\
+ rtph264pay config-interval=1 mtu=1024 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !\
+ udpsink host=127.0.0.1 port=${1}
+
