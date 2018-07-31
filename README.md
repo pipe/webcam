@@ -37,12 +37,12 @@ that single Pi and not for re-distribuiton or re-use._
 1. Build the pi
 plug all the bits together - soldering is required for the tft 
 2. setup the OS
-  * download https://s3.amazonaws.com/adafruit-raspberry-pi/2016-10-18-pitft-22.zip
-     or more or appropiate raspberian for your screen.
+  * download a recent copy of raspberian (not lite)
   * put it on an sd card
 https://www.raspberrypi.org/documentation/installation/installing-images/
   * ssh into the new device (or plugin a mouse/kbd) 
-     (note you may need to add a 'ssh' file in /boot to enable ssh on first boot)
+     (note you may need to add a 'wpa_supplicant.conf' and 'ssh' file in /boot to enable wifi/ssh on first boot)
+    ssh p2@raspberrypi.local (assuming you only have one)
   * run raspi-config -
       * expand the filesystem, 
       * enable the camera, 
@@ -57,13 +57,8 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
    but in some situations wifi fits the bill
    (recent Rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
    connect up on first boot)
-4. install and config pipe software
-  * make a link and pipe for the camera
-   `mknod camera.mjpeg p`
-   `ln -s camera.mjpeg camera`
-  * copy `dot.xsession` to `.xsession` to pi's home directory
-  * copy `pipe-java-client-1.0-SNAPSHOT.jar` and `camera.sh` to pi's home directory
-
+4. install and config software
+   * see pibits/installSteps.txt
 5. reboot
 
 ## Hosting
