@@ -16,7 +16,8 @@ sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base \
    gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc\
    gstreamer1.0-tools autoconf automake libtool pkg-config\
    libgstreamer1.0-dev \
-   libgstreamer-plugins-base1.0-dev libraspberrypi-dev nginx
+   libgstreamer-plugins-base1.0-dev libraspberrypi-dev nginx \
+   oss-compat oss4-base pulseaudio libopus-dev
 
 git clone https://github.com/thaytan/gst-rpicamsrc.git
 cd gst-rpicamsrc

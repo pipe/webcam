@@ -24,6 +24,6 @@ gpio -g mode 22 up
 pinval=`gpio -g read 22`
 while [ $pinval -ne 0 ]
 do
-jjs -J-Xmx256m -J-Dpe.pi.client.small.defaultPage=install.html -J-Djava.net.preferIPv4Stack=true -cp pipe-java-client-1.0.4.jar webcam.js  > pipe.out
+jjs -J-Xmx256m -J-Dpe.pi.client.small.defaultPage=install.html -J-Djava.net.preferIPv4Stack=true -cp pipe-java-client-1.0.5.jar webcam.js  > pipe.out
 pinval=`gpio -g read 22`
 done
