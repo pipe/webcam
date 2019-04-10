@@ -1,0 +1,15 @@
+<html>
+<body>
+<script>
+function addControl(){
+        $('#pipeloading').hide();
+}
+</script>
+<H1>PipeCam video</H1>
+<div> 
+  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='addControl();PipeAV.videoHere("ownervideo",deviceduct);'/>
+  <video id="ownervideo" playsinline="true" autoplay="autoplay" onclick='document.getElementById("ownervideo").play();'></video>
+</div>
+<div><a href="../index.html">list of devices</a></div>
+</body>
+</html>
