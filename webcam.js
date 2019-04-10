@@ -23,7 +23,7 @@ var homedir = "."; //sets CWD for bulk of actions
 
 // if you don't have an actual sceeen, you can intercept messages and status here
 var screen = App.mkScreen();
-App.prefixUrl = "https://pi.pe/p/cl.html";
+App.prefixUrl = "https://dev.pi.pe/claim.html";
 
 //var avmux = new AVMux(47806); // starts listening for video frames on this port
 

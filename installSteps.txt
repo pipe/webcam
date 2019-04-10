@@ -29,12 +29,14 @@ cd ~
 git clone https://github.com/pipe/webcam.git
 
 cd webcam
-cp dot.xsession ~/.xsession
-cp webcam.js videorelay ~
+ln -s `pwd`/dot.xsession ~/.xsession
+ln -s `pwd`/videorelay ~/videorelay
 sudo cp nginx.default /etc/nginx/sites-enabled/default
-
+cd gstrelay
+gcc -DRPICAMSRC videorelay.c -o gstbin `pkg-config --cflags --libs gstreamer-1.0`
 cd ~
 wget {Address of |pipe| jar}
+ln -s pipe-java-client-1*.jar pipe-java-client-current.jar 
 
 sudo reboot
 
