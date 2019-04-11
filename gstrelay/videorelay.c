@@ -8,7 +8,7 @@
  *
 echo "sending to " ${1}
 exec gst-launch-1.0 \
- rpicamsrc keyframe-interval=30 rotation=270 bitrate=768000 ! video/x-h264,width=640,height=480,framerate=15/1! h264parse !\
+ rpicamsrc keyframe-interval=30 rotation=180 bitrate=768000 ! video/x-h264,width=640,height=480,framerate=15/1! h264parse !\
  rtph264pay config-interval=1 mtu=1208 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !\
  udpsink host=127.0.0.1 port=${1}
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   data.sink = gst_element_factory_make ("udpsink", "sink");
 
 #ifdef RPICAMSRC
-  g_object_set(data.source, "keyframe-interval",30, "rotation",270, "bitrate",768000, NULL);
+  g_object_set(data.source, "keyframe-interval",30, "rotation",180, "bitrate",768000, NULL);
 #else
   g_object_set(data.source, "device", "/dev/video0", NULL);
   g_object_set(data.encode, "tune",4,"bitrate",1000,"speed-preset",1,"aud",FALSE,"key-int-max",5,"threads",4,NULL);

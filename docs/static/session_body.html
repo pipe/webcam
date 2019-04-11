@@ -1,15 +1,18 @@
 <html>
 <body>
 <script>
-function addControl(){
-        $('#pipeloading').hide();
+function addVideo(){
+  $('#pipeloading').hide();
+  PipeAV.videoHere("ownervideo",deviceduct);
+  window.setInterval(function(){  PipeAV.pollBitrate("stats")},5000);
 }
 </script>
 <H1>PipeCam video</H1>
 <div> 
-  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='addControl();PipeAV.videoHere("ownervideo",deviceduct);'/>
-  <video id="ownervideo" playsinline="true" autoplay="autoplay" onclick='document.getElementById("ownervideo").play();'></video>
+  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='addVideo();'/>
+  <video id="ownervideo" playsinline="true" autoplay="autoplay"'></video>
 </div>
 <div><a href="../index.html">list of devices</a></div>
+<div id="stats">unknown</div>
 </body>
 </html>

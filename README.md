@@ -16,7 +16,11 @@ Use our API and device agent software to make a webcam with
 * works on 3g, 4g, wifi etc.
 
 For more info on the API see https://steely-glint.github.io/PipeApiDocs/
-
+## UPDATE
+ * This version supports iOS and android devices
+ * it also supports experimental bandwidth estimation - so the video quality will ramp up
+   to the capacity of the link.
+ * this requires a compiled version of the gstreamer video relay
 ## Ingredients:
 
  * 1x HDMI screen or xwindows capable display e.g.
@@ -27,7 +31,7 @@ For more info on the API see https://steely-glint.github.io/PipeApiDocs/
  * 1x Raspberry Pi camera
  * 1x git repo (cloned from here)
  * 1x copy of |pipe|'s IoT beta to run on the Pi
- * 1x or more Chrome browsers
+ * 1x or more WebRTC compatible browsers
  * Around 30 mins to 1hr
 
 To obtain a copy of our beta software, send an email with your Pi's serial
@@ -69,23 +73,24 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 ## Hosting - none
 This is the |pipe| magic - the web interface is stored on your pi
 but protected so only you and people you lend access to can see it.
-You can edit the docs/index.html file to change the behaviour.
+You can edit the docs/static/session_body.html file to change the behaviour.
 
 
 ## Testing:
 * You should see a QR code on the TFT screen -
-* Scan it with a qr code reader on your android phone.
-* Or you can use https://pi.pe/p/scan.html in chrome
+* Scan it with a qr code reader on your smartphone.
+  (on iOS if you say 'hey Siri scan this QR' your phone will open the camera app and let you scan the QR displaying a safari link)
+* Or you can use https://dev.pi.pe/scan.html in chrome/safari
 * The devices should pair and take you to the webcam interface
 
 ## Lending:
-If you want to access the webcam from a different computer or android phone,
+If you want to access the webcam from a different computer or smartphone,
 you can do a lend/borrow transaction.
 
-* On the device you used to claim the pi, browse to https://pi.pe/p/index.html
+* On the device you used to claim the pi, browse to https://dev.pi.pe/index.html
 * Select lend your device
 * Select the period you want to lend access for
-* Have the other android user scan the resulting QR
+* Have the other user scan the resulting QR
 * They will now have access
 
 ## Tightening up:
