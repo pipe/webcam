@@ -66,6 +66,8 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
    but in some situations wifi fits the bill
    (recent Rasberian versions allow you to put a wpa_supplicant.conf in /boot so it can
    connect up on first boot)
+   Be aware that the onboard wifi drops outbound packets at high packet rates
+   - use an ethernet connection or an external dongle for higher resolutions/bitrates.
 4. install and config software
    * see installSteps.txt
 5. reboot

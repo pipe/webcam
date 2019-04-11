@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 #ifdef RPICAMSRC
-  data.cam = gst_caps_new_simple ("video/x-h264", "width", G_TYPE_INT, 640, "height", G_TYPE_INT, 480, "framerate", GST_TYPE_FRACTION, 15, 1, NULL);
+  data.cam = gst_caps_new_simple ("video/x-h264", "width", G_TYPE_INT, 1024, "height", G_TYPE_INT, 720, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
 #else
   data.cam = gst_caps_new_simple ("video/x-raw", "format", G_TYPE_STRING, "YUY2", "width", G_TYPE_INT, 640, "height", G_TYPE_INT, 480, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
   data.h264 = gst_caps_new_simple ("video/x-h264", "profile",G_TYPE_STRING,"baseline", NULL);
