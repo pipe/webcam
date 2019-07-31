@@ -1,0 +1,77 @@
+<html>
+<body>
+<script>
+function addVideo(){
+  $('#pipeloading').hide();
+  PipeAV.videoHere("ownervideo",deviceduct,"owneraudio");
+  window.setInterval(function(){  PipeAV.pollBitrate("stats")},5000);
+}
+function toggle(what) {
+    console.log("in toggle for " + what);
+    var thing = document.getElementById(what);
+    var val = thing.checked;
+    console.log("value is " + val);
+    PipeAV.toggleMedia(what, val);
+    console.log("called PipeAV.toggleMedia");
+}
+</script>
+<H1>PipeCam video</H1>
+<h1>H264 Video </h1>
+
+    <div class="card mb-3">
+<img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='addVideo();'/>
+  <video class="card-img-top"  width="640" height="480" id="ownervideo" playsinline="true" autoplay="autoplay"></video>
+        <div class="card-body">
+            <h5 class="card-title">Media controls</h5>
+            <div class="container">
+                <div class="row">
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-title">
+                                Mic
+                            </div>
+                            <div class="card-body">
+                                <input id="mic" type="checkbox" onchange="toggle('mic');" data-size="large"
+                                       data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-title">
+                                Speaker
+                            </div>
+                            <div class="card-body">
+                                <input id="speaker" type="checkbox" onchange="toggle('speaker');" data-size="large"
+                                       data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-title">
+                                Video
+                            </div>
+                            <div class="card-body">
+                                <input id="video" type="checkbox" checked onchange="toggle('video');" data-size="large"
+                                       data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <audio id="owneraudio"/>
+<div> 
+<div><a href="../index.html">list of devices</a></div>
+<div id="stats">unknown</div>
+</body>
+</html>

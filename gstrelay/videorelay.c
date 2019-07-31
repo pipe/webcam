@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   data.sink = gst_element_factory_make ("udpsink", "sink");
 
 #ifdef RPICAMSRC
-  g_object_set(data.source, "keyframe-interval",30, "rotation",180, "bitrate",768000, NULL);
+  g_object_set(data.source, "preview-opacity",10,"keyframe-interval",30, "rotation",180, "bitrate",768000, NULL);
 #else
   g_object_set(data.source, "device", "/dev/video0", NULL);
   g_object_set(data.encode, "tune",4,"bitrate",1000,"speed-preset",1,"aud",FALSE,"key-int-max",5,"threads",4,NULL);
