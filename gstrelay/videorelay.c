@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
   data.sink = gst_element_factory_make ("udpsink", "sink");
 
 #ifdef RPICAMSRC
-  g_object_set(data.source, "preview-opacity",10,"keyframe-interval",30, "rotation",180, "bitrate",768000, NULL);
+  g_object_set(data.source, "preview-opacity",10,"keyframe-interval",30, "rotation",0, "bitrate",768000, NULL);
 #else
   g_object_set(data.source, "device", "/dev/video0", NULL);
   g_object_set(data.encode, "tune",4,"bitrate",1000,"speed-preset",1,"aud",FALSE,"key-int-max",5,"threads",4,NULL);
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 #ifdef RPICAMSRC
-  data.cam = gst_caps_new_simple ("video/x-h264", "width", G_TYPE_INT, 1024, "height", G_TYPE_INT, 720, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
+  data.cam = gst_caps_new_simple ("video/x-h264", "width", G_TYPE_INT, 640, "height", G_TYPE_INT, 480, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
 #else
   data.cam = gst_caps_new_simple ("video/x-raw", "format", G_TYPE_STRING, "YUY2", "width", G_TYPE_INT, 640, "height", G_TYPE_INT, 480, "framerate", GST_TYPE_FRACTION, 30, 1, NULL);
   data.h264 = gst_caps_new_simple ("video/x-h264", "profile",G_TYPE_STRING,"baseline", NULL);

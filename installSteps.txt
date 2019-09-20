@@ -27,6 +27,7 @@ cd webcam
 ln -s `pwd`/dot.xsession ~/.xsession
 ln -s `pwd`/videorelay ~/videorelay
 ln -s `pwd`/camera.sh ~/camera.sh
+ln -s `pwd`/addwifi.sh ~/addwifi.sh
 sudo cp nginx.default /etc/nginx/sites-enabled/default
 cd gstrelay
 gcc -DRPICAMSRC videorelay.c -o gstbin `pkg-config --cflags --libs gstreamer-1.0`
