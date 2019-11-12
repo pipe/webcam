@@ -13,7 +13,7 @@ exec gst-launch-1.0 \
  udpsink host=127.0.0.1 port=${1}
 
 v4l2src device=/dev/video0 ! video/x-raw,framerate=30/1,width=640,height=480,format=YUY2 ! videoconvert ! x264enc 
-tune=zerolatency bitrate=4000 speed-preset=ultrafast aud=False key-int-max=5 threads=4 
+tune=zerolatency bitrate=4000 speed-preset=ultrafast aud=False key-int-max=20 threads=1 
 ! video/x-h264,profile=baseline ! h264parse ! rtph264pay config-interval=1 mtu=1208 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !  udpsink host=127.0.0.1 port=${1} 
  */
 typedef struct _CustomData {
@@ -42,13 +42,14 @@ static gboolean handle_keyboard (GIOChannel *source, GIOCondition cond, CustomDa
     return TRUE;
   }
   gint bw = atoi(str);
-  fprintf(stderr,"bwe is %d\n",bw);
 #ifdef RPICAMSRC
   bw *=1000;
   g_object_set (data->source, "bitrate", bw, NULL);
 #else
+  bw = bw + (bw/5);
   g_object_set (data->encode, "bitrate", bw, NULL);
 #endif
+  fprintf(stderr,"bwe is %d\n",bw);
    
   g_free (str);
 
@@ -110,9 +111,9 @@ int main(int argc, char *argv[]) {
   g_object_set(data.source, "keyframe-interval",30, "rotation",180, "bitrate",768000, NULL);
 #else
   g_object_set(data.source, "device", "/dev/video0", NULL);
-  g_object_set(data.encode, "tune",4,"bitrate",1000,"speed-preset",1,"aud",FALSE,"key-int-max",5,"threads",4,NULL);
+  g_object_set(data.encode, "tune",4,"bitrate",1000,"speed-preset",1,"aud",FALSE,"key-int-max",20,"threads",1,NULL);
 #endif
-  g_object_set(data.payload, "config-interval",1,"mtu",1208,NULL);
+  g_object_set(data.payload, "config-interval",20,"mtu",1208,NULL);
   g_object_set(data.sink, "host","127.0.0.1","port",port,NULL);
   /* Create the empty pipeline */
   data.pipeline = gst_pipeline_new ("videorelay-pipeline");

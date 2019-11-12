@@ -1,0 +1,9 @@
+#!/bin/sh
+(sleep 10; echo 0 > /sys/module/ov5645_camera_mipi_v2/parameters/ov5645_af)&
+cd /project2/github/pipe/google-coral-examples-camera-pipe/gstreamer/
+#exec ./v158drive.sh $1
+#exec ./onewaydrive.sh $1
+exec ./quad.sh $1
+#exec ./v68d-drive.sh $1
+#exec ./decrun1.sh $1
+
