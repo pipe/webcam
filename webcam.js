@@ -5,7 +5,7 @@
 
 // Bare necessities
 var Log = Java.type('com.phono.srtplight.Log');
-Log.setLevel(Log.DEBUG); // VERB, DEBUG,INFO, WARN , ERROR 
+Log.setLevel(Log.INFO); // VERB, DEBUG,INFO, WARN , ERROR 
 var App = Java.type('pe.pi.client.small.App'); // base type for a device that receives connections
 var BiFunc = Java.type('java.util.function.BiFunction');
 
@@ -15,6 +15,17 @@ var HttpEndpoint = Java.type('pe.pi.client.endpoints.proxy.HttpEndpoint');
 
 // Other classes we will configure
 var JksCertHolder = Java.type('pe.pi.client.base.certHolders.JksCertHolder');
+var SliceConnect = Java.type('pe.pi.client.small.SliceConnect');
+
+
+// OEM customizations
+App.prefixUrl = "https://steely-glint.github.io/ppp/claim.html";
+SliceConnect.STUNURI= "stun:stun4.l.google.com:19302"; // setup the stun URI
+App.WSURI = "wss://pi.pe/websocket/?finger="; // and the rendezvous websocket.
+
+
+
+
 
 //settings on some of those classes
 
@@ -23,7 +34,6 @@ var homedir = "."; //sets CWD for bulk of actions
 
 // if you don't have an actual sceeen, you can intercept messages and status here
 var screen = App.mkScreen();
-App.prefixUrl = "https://dev.pi.pe/claim.html";
 
 //var avmux = new AVMux(47806); // starts listening for video frames on this port
 
