@@ -74,11 +74,34 @@ avmux.startListening(EC); // open audio listener on alsa (with Echo supression)
 
 
 var Timer = Java.type("java.util.Timer")
+var prev = {};
 var timer = new Timer()
 timer.schedule(function() { 
   var allstats = avmux.getVStats();
-  var active = allstats.length;
-  Log.info("count = "+active);
+  var total = allstats.length;
+  var lossy = 0;
+  var active =0;
+  var bw = 0.0;
+  for (var n=0; n< total; n++){
+	  var stat = allstats[n];
+	 if (stat.packetloss > 2){
+		 lossy++;
+	 }
+	 ssrc = stat.ssrc;
+	 pre = prev[ssrc];
+	 if (pre != null){
+		var dbw = stat.snd_octs - pre.snd_octs;
+		bw += dbw;
+                if (stat.lastseen > pre.lastseen){
+			active++;
+		}
+	 } else {
+	        bw += stat.snd_octs;
+	 }
+	 prev[ssrc] = stat;
+  }
+  bw = bw/200000.0
+  Log.info("total = "+total+" active="+active+" lossy ="+lossy+" bandwidth="+bw);
  }, 2000,2000)
 
 
