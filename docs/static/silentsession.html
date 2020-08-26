@@ -1,0 +1,18 @@
+<html>
+<body>
+<script>
+function addVideo(){
+  $('#pipeloading').hide();
+  PipeAV.videoHere("ownervideo",deviceduct);
+  window.setInterval(function(){  PipeAV.pollBitrate("stats")},5000);
+}
+</script>
+<H1>PipeCam video</H1>
+<div> 
+  <img id="pipeloading" style="background-color:black;" src="https://pi.pe/img/pipe.png" onload='addVideo();'/>
+  <video id="ownervideo" playsinline="true" autoplay="autoplay"'></video>
+</div>
+<div><a href="index.html">list of devices</a></div>
+<div id="stats">unknown</div>
+</body>
+</html>

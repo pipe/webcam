@@ -2,6 +2,6 @@
    killall gst-launch-1.0
    echo "sending to " ${1}
    exec gst-launch-1.0 \
-v4l2src device=/dev/video1 ! video/x-raw,framerate=20/1,width=640,height=480,format=YUY2 ! videoconvert !   x264enc tune=zerolatency bitrate=1024 speed-preset=ultrafast aud=False key-int-max=20 threads=3 \
+v4l2src device=/dev/video1 ! image/jpeg,framerate=30/1,width=1920,height=1080,format=MJPG ! jpegparse ! jpegdec ! videoconvert !   x264enc tune=zerolatency bitrate=4000 speed-preset=ultrafast aud=False key-int-max=5 \
 ! video/x-h264,profile=baseline ! h264parse ! rtph264pay config-interval=20 mtu=1208 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !  udpsink host=127.0.0.1 port=${1} 
 

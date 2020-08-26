@@ -1,0 +1,7 @@
+#!/bin/sh
+   killall gst-launch-1.0
+   echo "sending to " ${1}
+   exec gst-launch-1.0 \
+v4l2src device=/dev/video1 ! video/x-raw,framerate=20/1,width=800,height=600,format=YUY2 ! videoconvert !   vp8enc keyframe-max-dist=20 deadline=40000 threads=1 target-bitrate=1000000 \
+! video/x-vp8 ! rtpvp8pay mtu=1208 ! "application/x-rtp, payload=(int)96, ssrc=(uint)555555" !  udpsink host=127.0.0.1 port=${1} 
+
