@@ -5,6 +5,12 @@ function addVideo(){
   $('#pipeloading').hide();
   PipeAV.videoHere("ownervideo",deviceduct,"owneraudio");
   window.setInterval(function(){  PipeAV.pollBitrate("stats")},5000);
+  window.setTimeout(function(){
+	  toggle("speaker");
+  },8000);
+  window.setTimeout(function(){
+	  toggle("screen");
+  },15000);
 }
 function toggle(what) {
     console.log("in toggle for " + what);
@@ -44,7 +50,7 @@ function toggle(what) {
                                 Speaker
                             </div>
                             <div class="card-body">
-                                <input id="speaker" type="checkbox" onchange="toggle('speaker');" data-size="large"
+                                <input id="speaker" type="checkbox" checked onchange="toggle('speaker');" data-size="large"
                                        data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
                             </div>
                         </div>
@@ -53,10 +59,21 @@ function toggle(what) {
                     <div class="col">
                         <div class="card">
                             <div class="card-title">
-                                Video
+                                Screen
                             </div>
                             <div class="card-body">
-                                <input id="video" type="checkbox" checked onchange="toggle('video');" data-size="large"
+                                <input id="screen" type="checkbox" checked onchange="toggle('screen');" data-size="large"
+                                       data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-title">
+                                Camera
+                            </div>
+                            <div class="card-body">
+                                <input id="camera" type="checkbox" checked onchange="toggle('camera');" data-size="large"
                                        data-onstyle="success" data-offstyle="danger" data-toggle="toggle"/>
                             </div>
                         </div>

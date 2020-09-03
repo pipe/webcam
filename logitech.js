@@ -8,15 +8,17 @@
 
 // Bare necessities
 var Log = Java.type('com.phono.srtplight.Log');
-Log.setLevel(Log.DEBUG); // VERB, DEBUG,INFO, WARN , ERROR 
+Log.setLevel(Log.INFO); // VERB, DEBUG,INFO, WARN , ERROR 
 var App = Java.type('pe.pi.client.small.App'); // base type for a device that receives connections
 var SmallScreen = Java.type('pe.pi.client.small.screen.SmallScreen');
 var BiFunc = Java.type('java.util.function.BiFunction');
 var AVMux = Java.type('pe.pi.client.av.AVMux');
 var LocalRTPRepeater = Java.type('pe.pi.client.av.LocalRTPRepeater');
+var RTPRepeater = Java.type('pe.pi.client.av.RTPRepeater');
 
 // Endpoints that will be available to the remote user
-var AudioVideoRelayMux = Java.type('pe.pi.client.endpoints.rtmedia.AudioVideoRelayMux');
+var BiAVRelayMux = Java.type('pe.pi.client.endpoints.rtmedia.BiAVRelayMux');
+//var AudioVideoRelayMux = Java.type('pe.pi.client.endpoints.rtmedia.AudioVideoRelayMux');
 var WebsocketEndpoint = Java.type('pe.pi.client.endpoints.proxy.WebsocketEndpoint');
 var ErrorEndpoint = Java.type('pe.pi.client.device.endpoints.core.ErrorEndpoint');
 var RTPMarkedDataSink = Java.type('pe.pi.client.av.RTPMarkedDataSink');
@@ -41,8 +43,8 @@ SliceConnect.STUNURI= "stun:gont.westhawk.co.uk:3478"; // setup the stun URI
 var EC = false; // enable echo supression
 var homedir = "."; //sets CWD for bulk of actions
 
-//App.prefixUrl = "https://dev.pi.pe/claim.html";
-App.prefixUrl = "http://localhost:8888/ppp/docs/claim.html";
+App.prefixUrl = "https://dev.pi.pe/claim.html";
+//App.prefixUrl = "http://localhost:8888/ppp/docs/claim.html";
 // if you don't have an actual sceeen, you can intercept messages and status here
 var screen = new SmallScreen(){
     init: function () {},
@@ -64,6 +66,7 @@ var avmux = new AVMux(47806); // starts listening for video frames on this port
 avmux.startListening(EC); // open audio listener on alsa (with Echo supression)
 var localVideoRTP = new LocalRTPRepeater(1234,96); // echo video to local port
 avmux.addVideoSub(localVideoRTP); //subscribe for video feed
+var screenVideoRTP = new RTPRepeater("192.168.100.60",1236,96); // echo video to local port
 
 
 // function that maps between the label of a requested datachannel and 
@@ -85,7 +88,8 @@ var mapper = new BiFunc(){
                 case 'videorelay':
                 case 'avrelay':
                     Log.debug("Creating " + l);
-                    ret = new AudioVideoRelayMux(s, l, screen,avmux);
+                    ret = new BiAVRelayMux(s, l, screen,avmux);
+	            ret.setRTPRepeater(screenVideoRTP);
                     break;
                 case 'http://localhost:8181/':
                     ret = new HttpEndpoint(s, l, screen);
