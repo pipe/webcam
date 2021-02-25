@@ -19,11 +19,9 @@ Use our API and device agent software to make a webcam with
 
  * 1x HDMI screen or xwindows capable display e.g.
    Adafruit PiTFT 2.2" HAT Mini Kit - 320x240 2.2" TFT - No Touch 
-  
  * 1x micro sd card 8GB or larger 
  * 1x Raspberry Pi 
  * 1x Raspberry Pi camera
- * 1x git repo (cloned from here)
  * 1x or more WebRTC compatible browsers
  * Around 30 mins to 1hr
 
