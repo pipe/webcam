@@ -12,6 +12,8 @@ sudo apt-get install -y libgstreamer1.0-0 gstreamer1.0-plugins-base \
    libgstreamer-plugins-base1.0-dev libraspberrypi-dev \
    git 
 
+sync;
+
 git clone https://github.com/thaytan/gst-rpicamsrc.git
 cd gst-rpicamsrc
 ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
