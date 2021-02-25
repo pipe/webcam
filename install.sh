@@ -26,7 +26,7 @@ ln -s `pwd`/videorelay ~/videorelay
 cd gstrelay
 gcc -DRPICAMSRC videorelay.c -o gstbin `pkg-config --cflags --libs gstreamer-1.0`
 cd ~
-ln -s pipe-java-client-1*.jar pipe-java-client-current.jar 
+ln -s webcam/pipe-java-client-1*.jar pipe-java-client-current.jar 
 
 #sudo reboot
 
