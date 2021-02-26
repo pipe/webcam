@@ -1,2 +1,3 @@
 #!/bin/sh
-exec java -Xmx256m  -jar pipe-java-client-current.jar
+nohup java -Xmx128m -jar pipe-java-client-current.jar > /dev/null &
+
