@@ -31,6 +31,7 @@ gcc -DRPICAMSRC videorelay.c -o gstbin `pkg-config --cflags --libs gstreamer-1.0
 cd ~
 ln -s webcam/pipe-java-client-1*.jar pipe-java-client-current.jar 
 
-sudo cp rc.local /etc/rc.local
+sudo cp webcam/rc.local /etc/rc.local
+webcam/firstCam.sh
 
 echo done. 
