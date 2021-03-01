@@ -16,6 +16,7 @@ _IP=$(hostname -I) || true
 if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
-su -c pwd/webcam/startPipe.sh pi
+su -c /home/pi/webcam/startCam.sh pi
+
 
 exit 0

@@ -17,6 +17,7 @@ sync;
 
 git clone https://github.com/thaytan/gst-rpicamsrc.git
 cd gst-rpicamsrc
+libtoolize
 ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
 make
 sudo make install 
