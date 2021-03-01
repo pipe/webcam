@@ -17,11 +17,9 @@ Use our API and device agent software to make a webcam with
 
 ## Ingredients:
 
- * 1x HDMI screen or xwindows capable display e.g.
-   Adafruit PiTFT 2.2" HAT Mini Kit - 320x240 2.2" TFT - No Touch 
- * 1x micro sd card 8GB or larger 
  * 1x Raspberry Pi 
  * 1x Raspberry Pi camera
+ * 1x micro sd card 8GB or larger 
  * 1x or more WebRTC compatible browsers
  * Around 30 mins to 1hr
 
@@ -39,7 +37,7 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
   * ssh into the new device (or plugin a mouse/kbd) 
      (note you may need to add a 'wpa_supplicant.conf' and 'ssh' file in /boot to enable wifi/ssh on first boot)
     ssh pi@raspberrypi.local (assuming you only have one)
-  * run raspi-config -
+  * run sudo raspi-config -
       * rename the device, 
       * enable the camera, 
       * change the password, 
@@ -52,11 +50,13 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 wget https://raw.githubusercontent.com/pipe/webcam/main/install.sh
   * run the install script (which may take a while)
 sh -x install.sh 
-  * This takes quite a while (~10 mins depending on your internet/pi/sdcard) 
+  * This takes quite a while (>10 mins depending on your internet/pi/sdcard) 
   * Once everything is installed you should see a QR code displayed
   * scan it with your iphone camera or android phone 
   * open the url in chrome or safari
   * you should see pairing messages and then a live stream on your phone.
+  * now reboot the pi - the PipeCam software should restart automatically
+  * your live stream is available to your phone via https://dev.pi.pe/index.html
 
 ## Lending:
 If you want to access the webcam from a different computer or smartphone,

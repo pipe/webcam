@@ -2,8 +2,8 @@
 ## enable camera
 ## reboot
 
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get update -y
+sudo apt-get upgrade -y
 sudo apt-get install -y galternatives openjdk-8-jre-headless
 
 sudo apt-get install -y libgstreamer1.0-0 gstreamer1.0-plugins-base \
