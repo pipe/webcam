@@ -52,9 +52,11 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 wget https://raw.githubusercontent.com/pipe/webcam/main/install.sh
   * run the install script (which may take a while)
 sh -x install.sh 
-  * run the webcam software (The first run generates a new key which takes a minute)
-./webcam/startCam.sh 
-  * look for the pairing message, open the URL in chrome or safari
+  * This takes quite a while (~10 mins depending on your internet/pi/sdcard) 
+  * Once everything is installed you should see a QR code displayed
+  * scan it with your iphone camera or android phone 
+  * open the url in chrome or safari
+  * you should see pairing messages and then a live stream on your phone.
 
 ## Lending:
 If you want to access the webcam from a different computer or smartphone,
@@ -65,10 +67,11 @@ you can do a lend/borrow transaction.
 * Select the period you want to lend access for
 * Have the other user scan the resulting QR
 * They will now have access
+* This Eval version supports only one viewer at a time
 
 ## Tightening up:
 * check for open ports
 `netstat -lnt`
--remove associated software or firewall it.
+-remove associated software or enable a firewall .
 * other....
 
