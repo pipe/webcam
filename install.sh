@@ -18,6 +18,7 @@ sync;
 git clone https://github.com/thaytan/gst-rpicamsrc.git
 cd gst-rpicamsrc
 libtoolize
+cp ../ltnain.sh .
 ./autogen.sh --prefix=/usr --libdir=/usr/lib/arm-linux-gnueabihf/
 make
 sudo make install 
