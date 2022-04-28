@@ -1,4 +1,5 @@
-#!/bin/sh
-killall gstbin
-exec webcam/gstrelay/gstbin ${1}
-
+#!/bin/sh -v
+while IFS= read -r br
+    do
+       v4l2-ctl  -d /dev/video0 --set-ctrl video_bitrate=${br}000
+    done

@@ -34,12 +34,12 @@ plug all the bits together - soldering is required for the tft
   * download a recent copy of Raspberry Pi OS lite 
   * put it on an sd card
 https://www.raspberrypi.org/documentation/installation/installing-images/
+    (if you don't have a screen and keyboard, you'll need to use the advanced options 
+     to set the name of the device, configure wifi, enable ssh and add  a username/password)
   * ssh into the new device (or plugin a mouse/kbd) 
-     (note you may need to add a 'wpa_supplicant.conf' and 'ssh' file in /boot to enable wifi/ssh on first boot)
-    ssh pi@raspberrypi.local (assuming you only have one)
   * run sudo raspi-config -
       * rename the device, 
-      * enable the camera, 
+      * enable the _legacy_ camera, 
       * change the password, 
       * setup the wifi,
       * disable VNC 
@@ -50,7 +50,6 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 wget https://raw.githubusercontent.com/pipe/webcam/main/install.sh
   * run the install script (which may take a while)
 sh -x install.sh 
-  * This takes quite a while (>10 mins depending on your internet/pi/sdcard) 
   * Once everything is installed you should see a QR code displayed
   * scan it with your iphone camera or android phone 
   * open the url in chrome or safari
@@ -66,8 +65,7 @@ you can do a lend/borrow transaction.
 * Select lend your device
 * Select the period you want to lend access for
 * Have the other user scan the resulting QR
-* They will now have access
-* This Eval version supports only one viewer at a time
+* They will now have access for the period you selected
 
 ## Tightening up:
 * check for open ports
