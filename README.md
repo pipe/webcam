@@ -17,7 +17,7 @@ Use our API and device agent software to make a webcam with
 
 ## Ingredients:
 
- * 1x Raspberry Pi 
+ * 1x Raspberry Pi (ideally a newer one)
  * 1x Raspberry Pi camera
  * 1x micro sd card 8GB or larger 
  * 1x or more WebRTC compatible browsers
@@ -29,23 +29,26 @@ a single Pi and not for re-distribuiton or re-use._
 
 ## Recipe
 1. Build the pi
-plug all the bits together - soldering is required for the tft 
+plug all the bits together 
 2. setup the OS
-  * download a recent copy of Raspberry Pi OS lite 
-  * put it on an sd card
+  * Use the Raspi imager to put an OS image onto the sdcard
+  * We recommend the 32 bit Lite image
 https://www.raspberrypi.org/documentation/installation/installing-images/
     (if you don't have a screen and keyboard, you'll need to use the advanced options 
      to set the name of the device, configure wifi, enable ssh and add  a username/password)
   * ssh into the new device (or plugin a mouse/kbd) 
   * run sudo raspi-config -
-      * rename the device, 
+      On bullseye you _must:
       * enable the _legacy_ camera, 
+      On earlier OS's just enable the camera
+      If you haven't already set these, you should also
+      * rename the device, 
       * change the password, 
       * setup the wifi,
       * disable VNC 
       * enable ssh
   * reboot
-  * log back in - with the new password...
+  * log back in 
   * download the install script
 wget https://raw.githubusercontent.com/pipe/webcam/main/install.sh
   * run the install script (which may take a while)
