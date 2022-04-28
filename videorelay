@@ -1,5 +1,13 @@
-#!/bin/sh -v
+#!/bin/bash -v
+#v4l2-ctl --set-fmt-video width=640,height=480,pixelformat=4 -d /dev/video0 --set-ctrl video_bitrate=768000,h264_profile=1,repeat_sequence_header=1,vertical_flip=1,h264_i_frame_period=1800
 while IFS= read -r br
-    do
-       v4l2-ctl  -d /dev/video0 --set-ctrl video_bitrate=${br}000
-    done
+   do
+        echo "req was " ${br}
+   	if [ "${br}" = "force_key_frame" ]; then
+           v4l2-ctl --set-ctrl force_key_frame=1
+           echo "Keyframe request."
+        else
+           echo "non keyframe "
+           v4l2-ctl  -d /dev/video0 --set-ctrl video_bitrate=${br}000
+        fi
+   done
